@@ -10,28 +10,27 @@
             margin: 20px;
         }
         input {
-            margin: 5px 0;
-            padding: 5px;
+            margin: 10px 0;
+            padding: 10px;
             width: 100%;
         }
         button {
-            padding: 5px 10px;
+            padding: 10px 20px;
             cursor: pointer;
         }
         #result {
             margin-top: 20px;
+            font-size: 1.2em;
             font-weight: bold;
         }
     </style>
 </head>
 <body>
     <h1>Local Solar Time Calculator</h1>
-    <p>Enter your coordinates (latitude and longitude) to calculate the exact time:</p>
+    <p>Enter your location as <strong>latitude,longitude</strong> (e.g., 17.360377,81.117321):</p>
     <form id="timeForm" onsubmit="calculateTime(event)">
-        <label for="longitude">Longitude:</label>
-        <input type="number" id="longitude" name="longitude" step="0.000001" placeholder="Enter longitude (e.g., 81.117321)" required>
-        <label for="latitude">Latitude (optional):</label>
-        <input type="number" id="latitude" name="latitude" step="0.000001" placeholder="Enter latitude (e.g., 17.360377)">
+        <label for="location">Location (latitude,longitude):</label>
+        <input type="text" id="location" name="location" placeholder="Enter location" required>
         <button type="submit">Calculate Time</button>
     </form>
     <div id="result"></div>
@@ -40,16 +39,16 @@
         function calculateTime(event) {
             event.preventDefault();
             
-            const longitude = parseFloat(document.getElementById('longitude').value);
-            if (isNaN(longitude)) {
-                document.getElementById('result').innerText = "Please enter a valid longitude.";
+            const locationInput = document.getElementById('location').value.trim();
+            const [latitude, longitude] = locationInput.split(',').map(coord => parseFloat(coord));
+
+            if (isNaN(latitude) || isNaN(longitude)) {
+                document.getElementById('result').innerText = "Invalid input. Please enter coordinates in the format: latitude,longitude.";
                 return;
             }
 
+            // Get current UTC time
             const utcDate = new Date();
-            const utcHours = utcDate.getUTCHours();
-            const utcMinutes = utcDate.getUTCMinutes();
-            const utcSeconds = utcDate.getUTCSeconds();
 
             // Calculate time offset in hours from UTC based on longitude
             const timeOffset = longitude / 15;
